@@ -11,11 +11,14 @@ import UIKit
 class CanvasViewController: UIViewController {
     var trayOriginalCenter: CGPoint!
     var trayOpened = false
+    var smileyOriginalCenter: CGPoint!
 
     var openPositionY: CGFloat?
     var closePositionY: CGFloat?
 
     @IBOutlet weak var trayView: UIView!
+
+    var newlyCreatedFace: UIImageView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -86,4 +89,28 @@ class CanvasViewController: UIViewController {
         }
     }
 
+    @IBAction func onSmileyPanGesture(panGestureRecognizer: AnyObject) {
+        var point = panGestureRecognizer.locationInView(view)
+        var velocity = panGestureRecognizer.velocityInView(view)
+        var translation = panGestureRecognizer.translationInView(view)
+
+        if panGestureRecognizer.state == .Began {
+            var imageView = panGestureRecognizer.view as? UIImageView
+            newlyCreatedFace = UIImageView(image: imageView?.image)
+            newlyCreatedFace.frame = imageView!.frame
+            view.addSubview(newlyCreatedFace)
+
+            newlyCreatedFace.center = imageView!.center
+            newlyCreatedFace.center.y += trayView.frame.origin.y
+
+            smileyOriginalCenter = newlyCreatedFace.center
+        } else if panGestureRecognizer.state == .Changed {
+            var newXCenter = smileyOriginalCenter.x + translation.x
+            var newYCenter = smileyOriginalCenter.y + translation.y
+            newlyCreatedFace.center = CGPoint(x: newXCenter, y: newYCenter)
+        } else if panGestureRecognizer.state == .Ended {
+
+        }
+
+    }
 }
