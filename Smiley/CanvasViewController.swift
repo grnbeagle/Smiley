@@ -70,16 +70,13 @@ class CanvasViewController: UIViewController {
 
         if panGestureRecognizer.state == .Began {
             trayOriginalCenter = trayView.center
-            println("Gesture began \(point)")
         } else if panGestureRecognizer.state == .Changed {
             var newPositionY = trayOriginalCenter.y + translation.y
             var openCenterY = view.frame.height - openPositionY! / 2 + 30
-            println("---  newPositionY: \(newPositionY); openPositionY: \(openPositionY!)")
             trayView.center = CGPoint(x: trayOriginalCenter.x, y: newPositionY)
 //            trayView.center = CGPoint(x: trayOriginalCenter.x, y: max(newPositionY, openCenterY))
 //            println("Gesture changed \(point)")
         } else if panGestureRecognizer.state == .Ended {
-            println("Gesture ended \(point)")
             var movingDown = velocity.y > 0
             if (!movingDown) {
                 changeTrayViewY(openPositionY!)
@@ -110,6 +107,20 @@ class CanvasViewController: UIViewController {
         }
     }
 
+    func onSmileyPinchGesture(pinchGestureRecognizer: UIPinchGestureRecognizer) {
+        //apply change to frame
+        var scale = pinchGestureRecognizer.scale
+
+        if pinchGestureRecognizer.state == .Began {
+            println("Scale is: \(scale)")
+        } else if pinchGestureRecognizer.state == .Changed {
+            println("Scale is: \(scale)")
+        } else if pinchGestureRecognizer.state == .Ended {
+
+        }
+
+    }
+
     @IBAction func onSmileyPanGesture(panGestureRecognizer: AnyObject) {
         var point = panGestureRecognizer.locationInView(view)
         var velocity = panGestureRecognizer.velocityInView(view)
@@ -129,6 +140,9 @@ class CanvasViewController: UIViewController {
             var smileyPanGuesture = UIPanGestureRecognizer(target: self, action: "onSmileyPanGesture2:")
             newlyCreatedFace.addGestureRecognizer(smileyPanGuesture)
             newlyCreatedFace.userInteractionEnabled = true
+
+            var smileyPinchGesture = UIPinchGestureRecognizer(target: self, action: "onSmileyPinchGesture:")
+            newlyCreatedFace.addGestureRecognizer(smileyPinchGesture)
 
 
             smileyOriginalCenter = newlyCreatedFace.center
