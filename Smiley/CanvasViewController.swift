@@ -89,6 +89,27 @@ class CanvasViewController: UIViewController {
         }
     }
 
+    /// Panning faces after they are created
+    func onSmileyPanGesture2(panGestureRecognizer: AnyObject) {
+        var point = panGestureRecognizer.locationInView(view)
+        var velocity = panGestureRecognizer.velocityInView(view)
+        var translation = panGestureRecognizer.translationInView(view)
+
+        if panGestureRecognizer.state == .Began {
+            var senderImage = panGestureRecognizer.view as? UIImageView
+            if let senderImage = senderImage {
+                newlyCreatedFace = senderImage
+                smileyOriginalCenter = newlyCreatedFace?.center
+            }
+        } else if panGestureRecognizer.state == .Changed {
+            var newXCenter = smileyOriginalCenter.x + translation.x
+            var newYCenter = smileyOriginalCenter.y + translation.y
+            newlyCreatedFace.center = CGPoint(x: newXCenter, y: newYCenter)
+        } else if panGestureRecognizer.state == .Ended {
+            
+        }
+    }
+
     @IBAction func onSmileyPanGesture(panGestureRecognizer: AnyObject) {
         var point = panGestureRecognizer.locationInView(view)
         var velocity = panGestureRecognizer.velocityInView(view)
@@ -102,6 +123,13 @@ class CanvasViewController: UIViewController {
 
             newlyCreatedFace.center = imageView!.center
             newlyCreatedFace.center.y += trayView.frame.origin.y
+
+
+            // create pan gesture
+            var smileyPanGuesture = UIPanGestureRecognizer(target: self, action: "onSmileyPanGesture2:")
+            newlyCreatedFace.addGestureRecognizer(smileyPanGuesture)
+            newlyCreatedFace.userInteractionEnabled = true
+
 
             smileyOriginalCenter = newlyCreatedFace.center
         } else if panGestureRecognizer.state == .Changed {
